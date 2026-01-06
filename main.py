@@ -104,10 +104,25 @@ def main():
             print("No cache files found. Run --update-cache first.")
             return
 
-        # Pick the latest file (optional: could sort by start_date or end_date)
-        latest_file = sorted(json_files)[-1]
-        print(f"Processing cache: {latest_file}")
-        with open(latest_file, "r", encoding="utf-8") as f:
+        json_files = list(Path(".").glob("workouts_start_*_end_*_num_*.json"))
+        if not json_files:
+            print("No cache files found. Run --update-cache first.")
+            return
+
+        NUM_RE = re.compile(r"_num_(\d+)\.json$")
+        def extract_num_days(path: Path) -> int:
+            m = NUM_RE.search(path.name)
+            return int(m.group(1)) if m else -1
+
+        # pick file with largest num_*
+        chosen_file = max(json_files, key=extract_num_days)
+
+        # # Pick the latest file (optional: could sort by start_date or end_date)
+        # chosen_file = sorted(json_files)[-1]
+
+
+        print(f"Processing cache: {chosen_file}")
+        with open(chosen_file, "r", encoding="utf-8") as f:
             workouts = json.load(f)
 
         for i in range(5):
@@ -132,10 +147,14 @@ def main():
             # "abs core."
             # "calf calves."
             # "shoulders."
-            "seated leg press."
+            # "seated leg press."
             # "triceps."
-            # "lat pull-down."
+            "lat pull-down."
+            # "lat pulldown."
             # "chest fly."
+            # "forearms."
+            # "seated pec dec."
+            # "bicep preacher machine."
         ]:
             if exercise in exercise_data:
                 plot_exercise_boxplot(exercise, exercise_data[exercise])
