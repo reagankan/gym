@@ -2,6 +2,8 @@ from notes_utils import get_notes
 from parser_utils import parse_html, parse_workout
 from date_utils import infer_workout_date_range
 from io_utils import save_workouts_to_json, load_workouts_from_json
+from plot_utils import plot_exercise_boxplot
+from stats_utils import remove_outliers
 
 import argparse
 import json
@@ -17,6 +19,51 @@ def get_workouts():
         for note in filter(lambda n: DATE_PATTERN.match(n.name), notes)
     ]
     return workouts
+
+import re
+
+WEIGHT_RE = re.compile(r"(\d+(\.\d+)?)x")
+
+def parse_weight(line):
+    """
+    Returns float weight if present, else None
+    """
+    m = WEIGHT_RE.search(line)
+    if not m:
+        return None
+    return float(m.group(1))
+
+from collections import defaultdict
+
+def extract_exercise_weights(workouts):
+    """
+    Returns:
+        dict[exercise_name][date] -> list[weights]
+    """
+
+    data = defaultdict(lambda: defaultdict(list))
+
+    for w in workouts:
+        if not w:
+            continue
+
+        date = w[0]
+
+        for block in w[1:]:
+            if not isinstance(block, list) or not block:
+                continue
+
+            exercise = block[0].strip().lower()
+
+            if exercise in {"done.", "done"}:
+                continue
+
+            for line in block[1:]:
+                weight = parse_weight(line)
+                if weight is not None and weight > 0:
+                    data[exercise][date].append(weight)
+
+    return data
 
 def demo():
     workouts = get_workouts()
@@ -65,6 +112,33 @@ def main():
 
         for i in range(5):
             print(workouts[i])
+
+
+        exercise_data = extract_exercise_weights(workouts)
+
+        # TODO: find a smarter way to separate machines/movements or normalize into the same plot.
+        # removing outliers across all dataset dates is inconsistent.
+        # e.g. GOOD for "chest fly.", when I moved from chest fly cables to dumbells+bench.
+        # e.g. BAD for "calf calves.", when I moved from standing to seated machines.
+        # exercise_data = remove_outliers(exercise_data)
+
+        # plot a few exercises
+        # TODO: make this a CLI arg.
+        for exercise in [
+            # "incline bench. dumbbells.",
+            # "bench.",
+            # "biceps.",
+            # "chest fly.",
+            # "abs core."
+            # "calf calves."
+            # "shoulders."
+            "seated leg press."
+            # "triceps."
+            # "lat pull-down."
+            # "chest fly."
+        ]:
+            if exercise in exercise_data:
+                plot_exercise_boxplot(exercise, exercise_data[exercise])
         return
 
 

@@ -7,8 +7,7 @@ conda deactivate
 source .venv_gym/bin/activate
 pip install --upgrade pip
 
-pip install macnotesapp
-pip install beautifulsoup4
+pip install macnotesapp beautifulsoup4 matplotlib
 ```
 
 ### usage
