@@ -88,6 +88,32 @@ def main():
     parser = argparse.ArgumentParser(description="Gym workout processor")
     parser.add_argument("--update-cache", action="store_true", help="Fetch workouts from Notes and save to cache")
     parser.add_argument("--process-cache", action="store_true", help="Load workouts from cache")
+
+    """
+    "incline bench. dumbbells.",
+    "bench.",
+    "biceps.",
+    "chest fly.",
+    "abs core."
+    "calf calves."
+    "shoulders."
+    "seated leg press."
+    "triceps."
+    "lat pull-down."
+    "lat pulldown."
+    "chest fly."
+    "forearms."
+    "seated pec dec."
+    "bicep preacher machine."
+    """
+    parser.add_argument(
+        "--exercises",
+        nargs="+",
+        default=["biceps."],
+        help='Exercise names to plot (e.g. "bench." "biceps.") or "all"'
+    )
+
+
     args = parser.parse_args()
 
     if args.update_cache:
@@ -137,28 +163,19 @@ def main():
         # e.g. BAD for "calf calves.", when I moved from standing to seated machines.
         # exercise_data = remove_outliers(exercise_data)
 
-        # plot a few exercises
-        # TODO: make this a CLI arg.
-        for exercise in [
-            # "incline bench. dumbbells.",
-            # "bench.",
-            # "biceps.",
-            # "chest fly.",
-            # "abs core."
-            # "calf calves."
-            # "shoulders."
-            # "seated leg press."
-            # "triceps."
-            "lat pull-down."
-            # "lat pulldown."
-            # "chest fly."
-            # "forearms."
-            # "seated pec dec."
-            # "bicep preacher machine."
-        ]:
+
+        if args.exercises is None:
+            print("No exercises specified. Use --exercises or 'all'.")
+            return
+
+        if len(args.exercises) == 1 and args.exercises[0].lower() == "all":
+            exercises_to_plot = sorted(exercise_data.keys())
+        else:
+            exercises_to_plot = [e.lower() for e in args.exercises]
+
+        for exercise in exercises_to_plot:
             if exercise in exercise_data:
                 plot_exercise_boxplot(exercise, exercise_data[exercise])
-        return
 
 
 if __name__ == "__main__":
