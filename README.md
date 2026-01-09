@@ -27,7 +27,7 @@ Saves JSON cache only if it doesn’t already exist
 ```
 Looks for cached JSON files in the current directory
 
-Loads the latest one
+Loads the file with the most dataset dates
 
 Prints the first 5 workouts for preview
 ```
