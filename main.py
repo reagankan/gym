@@ -13,11 +13,13 @@ from pathlib import Path
 DATE_PATTERN = re.compile(r"^2\d{3}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$")
 
 def get_workouts():
-    notes = get_notes()
-    workouts = [
-        parse_workout(parse_html(note.body))
-        for note in filter(lambda n: DATE_PATTERN.match(n.name), notes)
-    ]
+    workouts = []
+    for note in get_notes():
+        if DATE_PATTERN.match(note.name):
+            workouts.append(parse_workout(parse_html(note.body)))
+        else:
+            print("Skipping note", note.name)
+
     return workouts
 
 import re
@@ -90,7 +92,7 @@ def main():
     parser.add_argument("--process-cache", action="store_true", help="Load workouts from cache")
 
     """
-    "incline bench. dumbbells.",
+    "incline bench. dumbbells.", incline shoulder press.
     "bench.",
     "biceps.",
     "chest fly.",
