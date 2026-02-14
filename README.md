@@ -31,3 +31,28 @@ Loads the file with the most dataset dates
 
 Prints the first 5 workouts for preview
 ```
+
+
+
+
+### terminology
+
+shoulders. shoulder press. seated shoulder press.
+
+
+TODO: incline shoulder press --> incline bench.
+
+
+early chest fly --> chest fly. cables.
+
+
+biceps.
+biceps. standing.
+biceps. standing. dumbbell. {together, both}.
+
+biceps. preacher.
+biceps. preacher machine.
+
+biceps. seated.
+biceps. seated incline bench.
+biceps. bench.
