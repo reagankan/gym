@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 
 def annotate_years(dates):
@@ -114,4 +115,5 @@ def plot_exercise_boxplot(exercise_name, exercise_data):
     plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
 
     plt.tight_layout()
+    plt.savefig(os.path.join(".", "imgs", "_".join(exercise_name.split(" "))))
     plt.show()
