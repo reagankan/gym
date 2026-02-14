@@ -24,16 +24,30 @@ def get_workouts():
 
 import re
 
-WEIGHT_RE = re.compile(r"(\d+(\.\d+)?)x")
 
-def parse_weight(line):
+# (?:\b(\d+(?:\.\d+)?)\s*)?   # optional number before x
+# [xX]                        # literal x or X
+# \s*                         # optional spaces
+# (\d+(?:\.\d+)?)             # REQUIRED number after x
+WEIGHT_RE = re.compile(r"(?:\b(\d+(?:\.\d+)?)\s*)?[xX]\s*(\d+(?:\.\d+)?)")
+
+def parse_weight(line, parse_as_reps=False):
     """
-    Returns float weight if present, else None
+    Format: someOptionalNumber{x,X}requiredNumber(optional suffix)
+
+    Returns:
+        - optional number before x if parse_as_reps=False
+        - required number after x if parse_as_reps=True
     """
     m = WEIGHT_RE.search(line)
     if not m:
         return None
-    return float(m.group(1))
+
+    if parse_as_reps:
+        return float(m.group(2))  # requiredNumber
+
+    before = m.group(1)  # someOptionalNumber (may be None)
+    return float(before) if before is not None else None
 
 from collections import defaultdict
 
@@ -42,6 +56,13 @@ def extract_exercise_weights(workouts):
     Returns:
         dict[exercise_name][date] -> list[weights]
     """
+
+    with open("config.json", "r") as f:
+        config = json.load(f)
+
+    TRACK_REPS = "track_progress_with_reps"
+    rep_exercises = config.get(TRACK_REPS)
+
 
     data = defaultdict(lambda: defaultdict(list))
 
@@ -61,7 +82,7 @@ def extract_exercise_weights(workouts):
                 continue
 
             for line in block[1:]:
-                weight = parse_weight(line)
+                weight = parse_weight(line, parse_as_reps=(rep_exercises and exercise in rep_exercises))
                 if weight is not None and weight > 0:
                     data[exercise][date].append(weight)
 
