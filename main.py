@@ -15,10 +15,14 @@ DATE_PATTERN = re.compile(r"^2\d{3}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$")
 def get_workouts():
     workouts = []
     for note in get_notes():
-        if DATE_PATTERN.match(note.name):
-            workouts.append(parse_workout(parse_html(note.body)))
-        else:
-            print("Skipping note", note.name)
+        try:
+            if DATE_PATTERN.match(note.name):
+                workouts.append(parse_workout(parse_html(note.body)))
+            else:
+                print("Skipping note", note.name)
+        except Exception as e:
+            print("Skipping note", note, e)
+            continue
 
     return workouts
 
