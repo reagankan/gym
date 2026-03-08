@@ -1,3 +1,4 @@
+from config_utils import get_config, ConfigKey
 import os
 import matplotlib.pyplot as plt
 
@@ -110,7 +111,12 @@ def plot_exercise_boxplot(exercise_name, exercise_data):
     date_index, pr = get_personal_record(weights)
     plt.title(f"{exercise_name}\n{dates[date_index]}:{pr}")
     plt.xlabel("Date")
-    plt.ylabel("Weight (lbs)")
+
+
+    if exercise_name in get_config(ConfigKey.REP_EXERCISES):
+        plt.ylabel("Repetitions (count)")
+    else:
+        plt.ylabel("Weight (lbs)")
 
     plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
 

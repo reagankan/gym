@@ -1,3 +1,4 @@
+from config_utils import refresh_config, get_config, ConfigKey
 from notes_utils import get_notes
 from parser_utils import parse_html, parse_workout
 from date_utils import infer_workout_date_range
@@ -61,11 +62,7 @@ def extract_exercise_weights(workouts):
         dict[exercise_name][date] -> list[weights]
     """
 
-    with open("config.json", "r") as f:
-        config = json.load(f)
-
-    TRACK_REPS = "track_progress_with_reps"
-    rep_exercises = config.get(TRACK_REPS)
+    rep_exercises = get_config(ConfigKey.REP_EXERCISES)
 
 
     data = defaultdict(lambda: defaultdict(list))
@@ -206,6 +203,7 @@ def main():
 
 
 if __name__ == "__main__":
+    refresh_config()
     main()
 
 
