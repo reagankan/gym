@@ -111,7 +111,13 @@ def demo():
 def main():
     parser = argparse.ArgumentParser(description="Gym workout processor")
     parser.add_argument("--update-cache", action="store_true", help="Fetch workouts from Notes and save to cache")
-    parser.add_argument("--process-cache", action="store_true", help="Load workouts from cache")
+
+    parser.add_argument(
+        "--process-cache",
+        nargs="*",
+        metavar="EXERCISE",
+        help='Load workouts from cache. Optionally specify exercises (e.g. --process-cache "bench." "biceps." or "all")'
+    )
 
     """
     "incline bench. dumbbells.", incline shoulder press.
@@ -130,13 +136,6 @@ def main():
     "seated pec dec."
     "bicep preacher machine."
     """
-    parser.add_argument(
-        "--exercises",
-        nargs="+",
-        default=["biceps."],
-        help='Exercise names to plot (e.g. "bench." "biceps.") or "all"'
-    )
-
 
     args = parser.parse_args()
 
@@ -147,7 +146,7 @@ def main():
         save_workouts_to_json(workouts, start_date, end_date, num_dates)
         return
 
-    if args.process_cache:
+    if args.process_cache is not None:
         # If we don’t know the cache filename in advance, we infer it by scanning for existing JSON files
         json_files = list(Path(".").glob("workouts_start_*_end_*_num_*.json"))
         if not json_files:
@@ -170,14 +169,12 @@ def main():
         # # Pick the latest file (optional: could sort by start_date or end_date)
         # chosen_file = sorted(json_files)[-1]
 
-
         print(f"Processing cache: {chosen_file}")
         with open(chosen_file, "r", encoding="utf-8") as f:
             workouts = json.load(f)
 
         for i in range(5):
             print(workouts[i])
-
 
         exercise_data = extract_exercise_weights(workouts)
 
@@ -187,15 +184,12 @@ def main():
         # e.g. BAD for "calf calves.", when I moved from standing to seated machines.
         # exercise_data = remove_outliers(exercise_data)
 
-
-        if args.exercises is None:
-            print("No exercises specified. Use --exercises or 'all'.")
-            return
-
-        if len(args.exercises) == 1 and args.exercises[0].lower() == "all":
+        if len(args.process_cache) == 0:
+            exercises_to_plot = ["biceps."]
+        elif len(args.process_cache) == 1 and args.process_cache[0].lower() == "all":
             exercises_to_plot = sorted(exercise_data.keys())
         else:
-            exercises_to_plot = [e.lower() for e in args.exercises]
+            exercises_to_plot = [e.lower() for e in args.process_cache]
 
         for exercise in exercises_to_plot:
             if exercise in exercise_data:
