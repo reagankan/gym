@@ -151,12 +151,7 @@ def main():
         json_files = list(Path(".").glob("workouts_start_*_end_*_num_*.json"))
         if not json_files:
             print("No cache files found. Run --update-cache first.")
-            return
-
-        json_files = list(Path(".").glob("workouts_start_*_end_*_num_*.json"))
-        if not json_files:
-            print("No cache files found. Run --update-cache first.")
-            return
+            return None
 
         NUM_RE = re.compile(r"_num_(\d+)\.json$")
         def extract_num_days(path: Path) -> int:
