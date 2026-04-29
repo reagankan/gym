@@ -1,3 +1,4 @@
+import json
 import os
 import pytest
 from server import app
@@ -66,3 +67,25 @@ def test_index_has_btn_update(client):
     """The index page should contain the btn-update button."""
     resp = client.get("/")
     assert b'id="btn-update"' in resp.data
+
+
+def test_process_cache_stream_returns_sse(client):
+    """POST /api/process-cache-stream returns 200 with text/event-stream."""
+    resp = client.post("/api/process-cache-stream")
+    assert resp.status_code == 200
+    assert "text/event-stream" in resp.content_type
+
+
+def test_process_cache_stream_has_data_lines(client):
+    """The SSE response body contains data: lines."""
+    resp = client.post("/api/process-cache-stream")
+    assert b"data:" in resp.data
+
+
+def test_process_cache_stream_last_event_done(client):
+    """The last SSE data event should have 'done': true."""
+    resp = client.post("/api/process-cache-stream")
+    lines = [l for l in resp.data.decode().splitlines() if l.startswith("data:")]
+    assert len(lines) > 0
+    last = json.loads(lines[-1].removeprefix("data:").strip())
+    assert last.get("done") is True

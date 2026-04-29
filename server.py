@@ -8,7 +8,7 @@ import re
 import sys
 import types
 from pathlib import Path
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, Response, send_from_directory
 
 # Stub macnotesapp so importing main.py doesn't fail on Linux
 if 'macnotesapp' not in sys.modules:
@@ -47,15 +47,18 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 select { font-size: 1rem; padding: 0.4rem; width: 100%; margin: 0.5rem 0; }
 #status { margin: 0.5rem 0; white-space: pre-wrap; }
 img { max-width: 100%; margin-top: 0.5rem; }
+#progress-container { margin: 0.5rem 0; }
+progress { width: 80%; }
 </style>
 </head>
 <body>
 <h1>Gym Tracker</h1>
 <div>
   <button id="btn-update" onclick="post('/api/update-cache', this)">Update Data</button>
-  <button id="btn-graphs" onclick="post('/api/process-cache', this)">Update Graphs</button>
+  <button id="btn-graphs" onclick="streamGraphs()">Update Graphs</button>
 </div>
 <div id="status"></div>
+<div id="progress-container" style="display:none;"><progress id="progress-bar" value="0" max="100"></progress> <span id="progress-text"></span></div>
 <select id="exercises" onchange="showImg(this.value)">
   <option value="">-- select exercise --</option>
 </select>
@@ -78,6 +81,44 @@ async function post(url, btn) {
     if (url.includes('process-cache')) loadExercises();
   } catch(e) { status.textContent = 'Error: ' + e; }
   finally { if (isMac || btn.id !== 'btn-update') btn.disabled = false; }
+}
+async function streamGraphs() {
+  const btn = document.getElementById('btn-graphs');
+  const pc = document.getElementById('progress-container');
+  const pb = document.getElementById('progress-bar');
+  const pt = document.getElementById('progress-text');
+  btn.disabled = true;
+  pc.style.display = '';
+  pb.value = 0;
+  pt.textContent = '';
+  status.textContent = 'Working...';
+  try {
+    const r = await fetch('/api/process-cache-stream', {method:'POST'});
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, {stream:true});
+      let lines = buf.split('\\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = JSON.parse(line.slice(6));
+        if (d.error) { status.textContent = 'Error: ' + d.error; pc.style.display = 'none'; btn.disabled = false; return; }
+        pb.max = d.total;
+        pb.value = d.current;
+        pt.textContent = d.current + ' / ' + d.total;
+        if (d.done) {
+          status.textContent = 'Generated plots for ' + d.total + ' exercises from ' + d.file;
+          pc.style.display = 'none';
+          btn.disabled = false;
+          loadExercises();
+        }
+      }
+    }
+  } catch(e) { status.textContent = 'Error: ' + e; pc.style.display = 'none'; btn.disabled = false; }
 }
 function showImg(name) {
   const c = document.getElementById('img-container');
@@ -151,6 +192,41 @@ def process_cache():
         return jsonify(status=f"Generated plots for {len(exercise_data)} exercises from {chosen_file.name}")
     except Exception as e:
         return jsonify(error=str(e)), 500
+
+
+@app.route("/api/process-cache-stream", methods=["POST"])
+def process_cache_stream():
+    def generate():
+        try:
+            json_files = list(Path(PROJECT_DIR).glob("workouts_start_*_end_*_num_*.json"))
+            if not json_files:
+                yield 'data: {"error": "No cache files found. Run Update Data first."}\n\n'
+                return
+
+            NUM_RE = re.compile(r"_num_(\d+)\.json$")
+            def extract_num(p):
+                m = NUM_RE.search(p.name)
+                return int(m.group(1)) if m else -1
+
+            chosen_file = max(json_files, key=extract_num)
+
+            with open(chosen_file, "r", encoding="utf-8") as f:
+                workouts = json.load(f)
+
+            exercise_data = extract_exercise_weights(workouts)
+            exercises = sorted(exercise_data.keys())
+            total = len(exercises)
+
+            for i, exercise in enumerate(exercises, 1):
+                plot_exercise_boxplot(exercise, exercise_data[exercise])
+                plt.close('all')
+                yield f'data: {json.dumps({"current": i, "total": total, "exercise": exercise})}\n\n'
+
+            yield f'data: {json.dumps({"current": total, "total": total, "done": True, "file": chosen_file.name})}\n\n'
+        except Exception as e:
+            yield f'data: {json.dumps({"error": str(e)})}\n\n'
+
+    return Response(generate(), mimetype='text/event-stream')
 
 
 @app.route("/api/exercises")
