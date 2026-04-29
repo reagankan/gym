@@ -35,6 +35,24 @@ Prints the first 5 workouts for preview
 
 
 
+### web server
+
+```
+pip install flask
+python server.py
+```
+
+Open `http://localhost:8080` in a browser.
+
+- **Update Data** — fetches workouts from macOS Notes app and saves to JSON cache (macOS only)
+- **Update Graphs** — regenerates all exercise plots from the latest cache
+- **Dropdown** — select an exercise to view its progress chart
+
+To change host/port:
+```
+HOST=127.0.0.1 PORT=5000 python server.py
+```
+
 ### terminology
 
 shoulders. shoulder press. seated shoulder press.
