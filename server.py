@@ -32,6 +32,8 @@ refresh_config()
 
 IMGS_DIR = os.path.join(PROJECT_DIR, "imgs")
 
+IS_MAC = sys.platform == "darwin"
+
 HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +43,7 @@ HTML = """<!DOCTYPE html>
 <style>
 body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 1rem; }
 button { font-size: 1rem; padding: 0.6rem 1.2rem; margin: 0.3rem; cursor: pointer; }
-button:disabled { opacity: 0.5; cursor: wait; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
 select { font-size: 1rem; padding: 0.4rem; width: 100%; margin: 0.5rem 0; }
 #status { margin: 0.5rem 0; white-space: pre-wrap; }
 img { max-width: 100%; margin-top: 0.5rem; }
@@ -59,7 +61,13 @@ img { max-width: 100%; margin-top: 0.5rem; }
 </select>
 <div id="img-container"></div>
 <script>
+const isMac = {{IS_MAC}};
 const status = document.getElementById('status');
+if (!isMac) {
+  const btn = document.getElementById('btn-update');
+  btn.disabled = true;
+  btn.title = 'Coming soon!';
+}
 async function post(url, btn) {
   btn.disabled = true;
   status.textContent = 'Working...';
@@ -69,7 +77,7 @@ async function post(url, btn) {
     status.textContent = d.status || d.error || JSON.stringify(d);
     if (url.includes('process-cache')) loadExercises();
   } catch(e) { status.textContent = 'Error: ' + e; }
-  finally { btn.disabled = false; }
+  finally { if (isMac || btn.id !== 'btn-update') btn.disabled = false; }
 }
 function showImg(name) {
   const c = document.getElementById('img-container');
@@ -97,7 +105,7 @@ loadExercises();
 
 @app.route("/")
 def index():
-    return HTML
+    return HTML.replace("{{IS_MAC}}", "true" if IS_MAC else "false")
 
 
 @app.route("/api/update-cache", methods=["POST"])

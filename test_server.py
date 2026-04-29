@@ -54,3 +54,15 @@ def test_update_cache_fails_on_linux(client):
     data = resp.get_json()
     assert "error" in data
     assert "macnotesapp" in data["error"].lower()
+
+
+def test_index_contains_is_mac_false_on_linux(client):
+    """On Linux, the rendered HTML should set isMac = false."""
+    resp = client.get("/")
+    assert b"isMac = false" in resp.data
+
+
+def test_index_has_btn_update(client):
+    """The index page should contain the btn-update button."""
+    resp = client.get("/")
+    assert b'id="btn-update"' in resp.data
