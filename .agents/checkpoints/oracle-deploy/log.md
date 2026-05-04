@@ -2,7 +2,7 @@
 
 ## T=1 (2026-05-03T23:36:25Z) — INIT
 Seed prompt loaded. Plan created. Session start recorded.
-SSH access confirmed to <SERVER_IP> (ubuntu@, key at <SSH_KEY_PATH>).
+SSH access confirmed to 141.148.236.230 (ubuntu@, key at ~/shared/instance-keys/instance-20260207-0921/ssh-key-2026-02-07.key).
 Instance: Ubuntu 20.04, Python 3.8, 1GB RAM, 42GB free disk. Clean slate — no nginx, no /opt contents.
 iptables REJECT-all at rule 5, only port 22 allowed. OCI Security List updated by user to allow port 80.
 

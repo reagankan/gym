@@ -7,7 +7,7 @@ rationale: Basic auth protects the gym tracker from public access. This is simpl
 
 # Current State
 
-- Gym tracker is live at http://<SERVER_IP>/ with no authentication
+- Gym tracker is live at http://141.148.236.230/ with no authentication
 - nginx reverse proxies port 80 → gunicorn on 8080
 - nginx config is at `oracle/nginx-gym.conf`
 - Setup script is at `oracle/setup.sh`

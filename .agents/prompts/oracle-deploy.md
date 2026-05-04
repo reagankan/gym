@@ -15,7 +15,7 @@ rationale: The gym tracker server currently runs locally. We need to deploy it t
 
 ## Oracle Cloud Instance (already provisioned)
 
-- **Public IP**: <SERVER_IP>
+- **Public IP**: 141.148.236.230
 - **Shape**: VM.Standard.E2.1.Micro (Always Free tier)
 - **Region**: eu-amsterdam-1
 - **OS**: Ubuntu 20.04.6 LTS (Focal Fossa) Minimal
@@ -23,7 +23,7 @@ rationale: The gym tracker server currently runs locally. We need to deploy it t
 - **RAM**: 1GB
 - **Disk**: 45GB (42GB free)
 - **User**: `ubuntu`
-- **SSH key**: `<SSH_KEY_PATH>`
+- **SSH key**: `~/shared/instance-keys/instance-20260207-0921/ssh-key-2026-02-07.key`
 - **Source repo**: `~/shared/gym` (local, no GitHub remote)
 
 ## Firewall State (as discovered)
@@ -68,8 +68,8 @@ Run on the VM via SSH. Must be idempotent (safe to re-run).
 
 ## 4. Create `scripts/deploy.sh` — one-command deploy from local machine
 
-- SSH key path: `<SSH_KEY_PATH>`
-- Host: `<SERVER_IP>`, user: `ubuntu`
+- SSH key path: `~/shared/instance-keys/instance-20260207-0921/ssh-key-2026-02-07.key`
+- Host: `141.148.236.230`, user: `ubuntu`
 - `rsync -az --delete -e "ssh -i $KEY"` the repo to `ubuntu@$HOST:/opt/gym/`
 - Exclude: `.venv*`, `__pycache__`, `.git`, `.agents/`, `*.pyc`, `.pytest_cache`
 - SSH into the host and run:
@@ -89,7 +89,7 @@ Run on the VM via SSH. Must be idempotent (safe to re-run).
 
 - Initial setup: rsync files to server, then `sudo bash /opt/gym/oracle/setup.sh`
 - Deploy updates: `bash scripts/deploy.sh`
-- Public URL: `http://<SERVER_IP>/`
+- Public URL: `http://141.148.236.230/`
 - Check logs: `journalctl -u gym-server -f`
 - Restart: `sudo systemctl restart gym-server`
 - Note: OCI Security List must allow TCP port 80 ingress from 0.0.0.0/0 (configured in OCI console)

@@ -7,8 +7,8 @@ rationale: A custom domain with HTTPS makes the gym tracker accessible via a mem
 
 # Current State
 
-- Gym tracker is live at http://<SERVER_IP>/ with basic auth (admin/admin)
-- Server public IP: <SERVER_IP>
+- Gym tracker is live at http://141.148.236.230/ with basic auth (admin/admin)
+- Server public IP: 141.148.236.230
 - nginx listens on port 80
 - OCI Security List allows TCP port 80 ingress
 
@@ -17,7 +17,7 @@ rationale: A custom domain with HTTPS makes the gym tracker accessible via a mem
 1. **Register a domain** — e.g. `reagankan.com`, `reagankan.dev`, `reagankan.xyz`, etc. Cheap options:
    - Namecheap, Cloudflare Registrar, Google Domains, Porkbun
    - `.xyz` domains are ~$1/year, `.com` ~$10/year
-2. **Create a DNS A record** pointing the domain (or subdomain like `gym.reagankan.com`) to `<SERVER_IP>`
+2. **Create a DNS A record** pointing the domain (or subdomain like `gym.reagankan.com`) to `141.148.236.230`
    - This is done in the domain registrar's DNS settings
    - TTL: 300 (5 min) for fast propagation during setup
 3. **Add OCI Security List ingress rule** for port 443 (HTTPS):

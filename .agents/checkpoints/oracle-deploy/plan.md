@@ -8,7 +8,7 @@
 ## Hours Elapsed: 0
 
 ## Seed Prompt
-Deploy gym tracker Flask server to Oracle Cloud Free Tier VM (<SERVER_IP>) with systemd + nginx + deploy script.
+Deploy gym tracker Flask server to Oracle Cloud Free Tier VM (141.148.236.230) with systemd + nginx + deploy script.
 
 ## Milestones
 - [x] Information retrieved (SSH confirmed, OS/firewall state known)
