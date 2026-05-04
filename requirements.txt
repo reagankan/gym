@@ -1,3 +1,4 @@
 flask
 matplotlib
 beautifulsoup4
+gunicorn

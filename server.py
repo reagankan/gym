@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import types
+from datetime import datetime
 from pathlib import Path
 from flask import Flask, jsonify, Response, send_from_directory
 
@@ -241,6 +242,15 @@ def list_exercises():
 @app.route("/imgs/<filename>")
 def serve_image(filename):
     return send_from_directory(IMGS_DIR, filename)
+
+
+@app.route("/api/health")
+def health():
+    try:
+        exercises = len([f for f in os.listdir(IMGS_DIR) if f.endswith(".png")])
+    except FileNotFoundError:
+        exercises = 0
+    return jsonify(status="ok", timestamp=datetime.utcnow().isoformat(), exercises=exercises)
 
 
 if __name__ == "__main__":

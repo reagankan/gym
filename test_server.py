@@ -89,3 +89,31 @@ def test_process_cache_stream_last_event_done(client):
     assert len(lines) > 0
     last = json.loads(lines[-1].removeprefix("data:").strip())
     assert last.get("done") is True
+
+
+def test_health_returns_200_with_correct_json_structure(client):
+    resp = client.get("/api/health")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["status"] == "ok"
+    assert "timestamp" in data
+    # Verify timestamp is valid ISO8601
+    from datetime import datetime
+    datetime.fromisoformat(data["timestamp"])
+    assert isinstance(data["exercises"], int)
+
+
+def test_health_exercises_count_matches_png_files(client):
+    expected = len([f for f in os.listdir(IMGS_DIR) if f.endswith(".png")])
+    resp = client.get("/api/health")
+    data = resp.get_json()
+    assert data["exercises"] == expected
+
+
+def test_health_returns_zero_exercises_when_imgs_missing(client, tmp_path, monkeypatch):
+    monkeypatch.setattr("server.IMGS_DIR", str(tmp_path / "nonexistent"))
+    resp = client.get("/api/health")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["exercises"] == 0
+    assert data["status"] == "ok"
