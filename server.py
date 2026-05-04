@@ -55,7 +55,7 @@ progress { width: 80%; }
 <body>
 <h1>Gym Tracker</h1>
 <div>
-  <button id="btn-update" onclick="post('/api/update-cache', this)">Update Data</button>
+  <button id="btn-update" onclick="post('api/update-cache', this)">Update Data</button>
   <button id="btn-graphs" onclick="streamGraphs()">Update Graphs</button>
 </div>
 <div id="status"></div>
@@ -94,7 +94,7 @@ async function streamGraphs() {
   pt.textContent = '';
   status.textContent = 'Working...';
   try {
-    const r = await fetch('/api/process-cache-stream', {method:'POST'});
+    const r = await fetch('api/process-cache-stream', {method:'POST'});
     const reader = r.body.getReader();
     const decoder = new TextDecoder();
     let buf = '';
@@ -126,12 +126,12 @@ function showImg(name) {
   c.innerHTML = '';
   if (name) {
     const img = document.createElement('img');
-    img.src = '/imgs/' + encodeURIComponent(name) + '?t=' + Date.now();
+    img.src = 'imgs/' + encodeURIComponent(name) + '?t=' + Date.now();
     c.appendChild(img);
   }
 }
 async function loadExercises() {
-  const r = await fetch('/api/exercises');
+  const r = await fetch('api/exercises');
   const list = await r.json();
   const sel = document.getElementById('exercises');
   const cur = sel.value;
