@@ -55,6 +55,8 @@ HOST=127.0.0.1 PORT=5000 python server.py
 
 ### deployment
 
+The app is served under `/gym/` via `nginx-multi.conf` (owned by the arbitrage repo). Public URL: `http://<HOST>/gym/`
+
 **Initial setup** (one-time, on a fresh VM):
 ```
 # Set your SSH key and host
@@ -76,9 +78,11 @@ bash scripts/deploy.sh
 
 The deploy script reads `GYM_SSH_KEY` and `GYM_HOST` environment variables (defaults: `~/.ssh/oracle-gym.key` and `141.148.236.230`).
 
+> **Note:** The rsync excludes `imgs/` to preserve server-generated plot PNGs. To force-sync local images, use a one-time rsync: `rsync -az -e "ssh -i $GYM_SSH_KEY" imgs/ ubuntu@$GYM_HOST:/opt/gym/imgs/`
+
 **Authentication:** Basic auth is enabled. Default credentials: `admin` / `admin`.
 To change the password: `sudo htpasswd /etc/nginx/.htpasswd admin`.
-The `/api/health` endpoint is unauthenticated for monitoring.
+The `/gym/api/health` endpoint is unauthenticated for monitoring.
 
 **Check logs:**
 ```

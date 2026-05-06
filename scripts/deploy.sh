@@ -18,6 +18,7 @@ rsync -az --delete \
     --exclude '.agents/' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache' \
+    --exclude 'imgs/' \
     -e "ssh -i $KEY -o StrictHostKeyChecking=no" \
     "$SCRIPT_DIR/" "$USER@$HOST:/opt/gym/"
 
@@ -30,7 +31,7 @@ echo "Service restarted. Waiting for startup..."
 sleep 3
 
 # Health check
-HTTP_CODE=$($SSH "curl -s -o /dev/null -w '%{http_code}' http://localhost/api/health")
+HTTP_CODE=$($SSH "curl -s -o /dev/null -w '%{http_code}' http://localhost/gym/api/health")
 
 if [ "$HTTP_CODE" = "200" ]; then
     echo "=== Deploy successful! (HTTP $HTTP_CODE) ==="
