@@ -9,6 +9,160 @@
 > Each group lists names that may refer to the same exercise.
 > Groups marked ⚠️  differ by equipment/grip qualifiers and may be intentional distinct exercises.
 
+---
+
+## Post-Dedup Taxonomy Opportunity
+
+**The core idea:** your naming convention already encodes a natural hierarchy — `biceps.` → `biceps. standing.` → `biceps. standing. ez bar.` — but it's implicit and inconsistent. After deduplication, you could formalize this as a two- or three-level taxonomy that lets you drill in or zoom out:
+
+```
+Level 1 (muscle/movement): biceps
+Level 2 (position/equipment class): biceps > standing, biceps > seated, biceps > preacher
+Level 3 (specific variant): biceps > preacher > machine, biceps > preacher > bench, biceps > preacher > bench (right only)
+```
+
+**Why the dot-separated format already works for this:** `"biceps. standing. ez bar."` parses cleanly — segment 0 is the root, each subsequent segment is a narrower qualifier. The dedup step just needs to agree on canonical segment spellings before the taxonomy is buildable.
+
+**The two things to decide after dedup:**
+
+1. **Which variants warrant a separate Level 2 node** (distinct progress tracking) vs. which are just noise qualifiers that should roll up? Examples from the data:
+   - `biceps. preacher.` vs `biceps. standing.` — clearly distinct exercises (different ROM, different muscle emphasis) → **keep as separate Level 2 nodes**
+   - `biceps. standing.` vs `biceps. standing. separate.` — same exercise, minor form note → **roll up to Level 2**
+   - `pull-ups. wide.` vs `pull-ups. v grip.` vs `pull-ups.` — grip meaningfully changes stimulus → **keep as separate Level 3 nodes under pull-ups**
+   - `pull-ups. high.` / `pull-ups. short.` / `pull-ups. tall.` — these look like bar-height notes, not distinct exercises → **roll up to pull-ups.**
+
+2. **Whether to track progress at Level 2 or Level 3.** The data suggests you naturally zoomed in over time (early entries: `Biceps`, `Bicep`; later: `biceps. standing. ez bar.`). A taxonomy lets you query "all biceps sets" while still charting `biceps > standing > ez bar` separately.
+
+**Suggested taxonomy for the major exercise families** (draft — decisions marked where data is ambiguous):
+
+### biceps (P1)
+```
+biceps
+├── standing
+│   ├── [default — dumbbell implied]
+│   ├── barbell / ez bar           ← worth separating (fixed ROM, heavier loads)
+│   └── separate                   ← roll up to standing
+├── seated
+│   ├── [default — upright]
+│   └── incline                    ← worth separating (longer ROM, stretch-focused)
+├── preacher
+│   ├── machine                    ← worth separating
+│   └── bench                      ← worth separating
+├── cable / bayesian               ← worth separating (constant tension)
+└── [unqualified — early entries, roll up to root]
+```
+Note: triceps currently lives in the same P1 group due to union-find chaining through early Bicep/Tricep entries. **After dedup, biceps and triceps should be separate root nodes.**
+
+### shoulders (P2)
+```
+shoulders
+├── overhead press
+│   ├── barbell (standing)
+│   ├── dumbbell (seated or standing)
+│   └── machine
+├── incline press                  ← ambiguous: is this a separate movement or a modifier?
+│   └── [variants: barbell, dumbbell, smith machine]
+└── [unqualified — roll up to root]
+```
+Note: "incline shoulder press." (48 appearances, dominant variant) is almost certainly its own distinct movement vs a flat overhead press. Worth keeping as Level 2.
+
+### abs (P3)
+```
+abs
+├── core [general — most entries]
+│   ├── cable / cable machine      ← worth separating (weighted, different stimulus)
+│   └── [unqualified]
+└── at home                        ← roll up to root or drop (location note, not exercise)
+```
+
+### pull-ups (P4)
+```
+pull-ups
+├── [default — standard grip]
+├── wide                           ← worth separating
+├── v grip                         ← worth separating
+├── assisted                       ← worth separating (different load)
+└── height notes (high/short/tall/medium) ← roll up to default; these are bar-height cues, not distinct exercises
+```
+
+### chest fly (P5)
+```
+chest fly
+├── machine / pec dec              ← keep separate (see P13 for seated pec dec)
+├── cable                          ← keep separate
+├── dumbbell flat                  ← worth separating
+└── dumbbell bench (incline)       ← worth separating
+```
+Note: "chest flys." vs "chest fly." is a spelling dup — consolidate to one canonical spelling.
+
+### dips / back extensions / leg extensions (P6)
+Three separate exercises collapsed into one group by union-find. After dedup these should be three separate root nodes:
+```
+dips
+├── [default — tricep dips]
+├── back / lower back              ← back extension variant, keep separate
+└── assisted
+
+back extensions (lower back machine)
+
+leg extensions (quad isolation)
+```
+
+### calves (P7)
+```
+calves
+├── seated                         ← keep separate (soleus-dominant)
+│   └── [default machine]
+├── standing                       ← keep separate (gastrocnemius-dominant)
+│   └── [default machine]
+└── [unqualified — roll up to root]
+```
+Note: "calf calves." is a redundant phrasing; canonical should be just "calves." or "calf raises."
+
+### bench press (P8)
+```
+bench press
+├── flat
+│   ├── barbell (implied default)
+│   ├── dumbbell
+│   └── smith machine
+├── incline
+│   ├── barbell
+│   ├── dumbbell
+│   └── machine
+└── iso-lateral                    ← keep separate (unilateral machine movement)
+```
+Note: bare `bench.` (44 appearances) is the dominant canonical name; `incline bench.` (14 appearances) is a well-established Level 2 node.
+
+### lat pull-down (P9)
+```
+lat pull-down
+├── [default — standard grip]
+├── diamond grip                   ← worth separating
+├── cbum grip                      ← style note, could roll up
+├── machine (various)              ← roll up to default
+└── iso-lateral                    ← keep separate
+```
+
+### rows (P17)
+Three different rowing movements are grouped together. After dedup, separate root nodes:
+```
+cable rows (seated low rows)
+bent-over rows
+│   ├── barbell
+│   ├── dumbbell
+│   └── cable
+standing rows
+```
+
+**Implementation path (suggested order):**
+1. Run dedup: consolidate all exact/near-exact matches → reduces ~594 names to maybe ~80–100 canonical names
+2. Manually assign each canonical name a `root` tag and optional `modifier` tags
+3. Build a simple taxonomy map (JSON dict: `canonical_name → {root, level2, level3}`)
+4. The existing app can then query by root to get all sets, or filter by level2/level3 for specific tracking
+
+---
+
 ## Exact Matches (after normalisation)
 
 *These names normalise to the same string — safe to consolidate.*
@@ -33,6 +187,7 @@
 *One name appears to be a prefix/subset of others — review whether the longer name is a distinct exercise.*
 
 ### Group P1 — 380 total appearances
+> **Taxonomy note:** Two separate root nodes collapsed here by union-find chaining — **biceps** and **triceps** should be split apart after dedup. Within biceps: `biceps.` (89×) is the canonical root; `biceps. standing.` (25×), `biceps. seated.` (16×), and `biceps. preacher.` (13×) are the natural Level 2 nodes worth tracking separately. Within triceps: `triceps.` (39×) is the root; `triceps. rope.`, `triceps. dumbbell.`, `triceps. overhead.`, and `triceps. bent over.` are candidate Level 2 nodes.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -156,6 +311,7 @@
 | `triceps. single down.` | 1 | 2025-03-27 | 2025-03-27 |
 
 ### Group P2 — 139 total appearances
+> **Taxonomy note:** Root = **shoulders (press)**. `incline shoulder press.` (48×) is the dominant variant and warrants its own Level 2 node — it is mechanically distinct from a flat/standing overhead press. `shoulder press. barbell.` (5×+6×) and `shoulder press. dumbbells.` (2×+4×) are Level 3 nodes under a flat/standing press Level 2. `shoulders.` (5×) is the unqualified root catch-all.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -213,6 +369,7 @@
 | `shoulders. standing barbell.` | 1 | 2026-03-26 | 2026-03-26 |
 
 ### Group P3 — 132 total appearances
+> **Taxonomy note:** Root = **abs**. `abs core.` (58×+23×) dominates — "core" is a redundant qualifier in this dataset; canonical Level 1 should be `abs.`. `abs cable.` (25×) and `abs core. cable.` (23×) are the same thing and should consolidate to `abs. cable.` as a Level 2 node. `abs core. push machine.` (3×) → `abs. push machine.` Level 2.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -235,6 +392,7 @@
 | `abs. core.` | 2 | 2025-02-01 | 2025-03-27 |
 
 ### Group P4 — 127 total appearances
+> **Taxonomy note:** Root = **pull-ups**. `pull-ups.` (81×) is canonical. Natural Level 2 nodes: `pull-ups. wide.` (6×), `pull-ups. v grip.` (7×), `assisted pull-ups.` (7×+1×). **Roll up:** `pull-ups. high/short/tall/medium height/higher/mid height` — these are bar-height cues at a specific gym, not distinct exercises.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -263,6 +421,7 @@
 | `pull-ups. wider grip.` | 1 | 2025-06-26 | 2025-06-26 |
 
 ### Group P5 — 107 total appearances
+> **Taxonomy note:** Root = **chest fly**. `chest fly.` (78×) is canonical — consolidate `chest flys.` spelling variant. Level 2 nodes: `chest fly. bench.` (10×, dumbbell on flat/incline bench), `chest fly. cable.` (1×). `chest fly rear delt machine.` is a different exercise entirely (rear delt fly) — **should be its own root** after dedup.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -282,6 +441,7 @@
 | `dumbbell chest fly.` | 1 | 2025-04-15 | 2025-04-15 |
 
 ### Group P6 — 100 total appearances
+> **Taxonomy note:** Three separate root nodes merged here — split after dedup: **dips** (`dips.` 51×; `back dips.` 3× is lower-back hypers on a dip machine, not tricep dips — rename to avoid confusion), **back extensions** (`back extensions.` 4×), and **leg extensions** (`leg extensions.` 17×). `lower back dips.` / `lower back machine.` / `back dips.` all refer to the back extension movement and should unify under one root.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -308,6 +468,7 @@
 | `lower back machine. back extensions.` | 1 | 2025-09-15 | 2025-09-15 |
 
 ### Group P7 — 99 total appearances
+> **Taxonomy note:** Root = **calves**. `calf calves.` is a redundant double-naming — canonical should be `calves.`. Clear Level 2 split: `calves. seated.` (38×+4×, soleus-dominant) and `calves. standing.` (10×+1×+7×, gastrocnemius-dominant) — these target different muscles and should be tracked separately.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -328,6 +489,7 @@
 | `standing calf calves.` | 1 | 2025-08-12 | 2025-08-12 |
 
 ### Group P8 — 95 total appearances
+> **Taxonomy note:** Root = **bench press**. `bench.` (44×) is the canonical flat bench. `incline bench.` (14×) is a well-established Level 2 node. `iso lateral bench.` / `isolateral bench.` (3×+3×+2×) is a distinct machine movement — keep as Level 2. `bench smith.` / `Bench press. Smith.` — smith machine is a meaningful qualifier, keep as Level 3 under flat bench.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -356,6 +518,7 @@
 | `preacher single bench.` | 1 | 2024-04-16 | 2024-04-16 |
 
 ### Group P9 — 77 total appearances
+> **Taxonomy note:** Root = **lat pull-down**. `lat pull-down.` (53×) is canonical. `lat pull-downs.` is a spelling variant — consolidate. `iso lateral front lat pull-down.` (1×) is a distinct unilateral machine — keep as Level 2. `last pulldown.` is a typo of `lat pulldown.`. Grip variants (`diamond grip`, `cbum grip`) are Level 3 qualifiers worth keeping if you track them consistently.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -456,6 +619,7 @@
 | `forearm curls.` | 6 | 2024-05-26 | 2024-08-02 |
 
 ### Group P17 — 18 total appearances
+> **Taxonomy note:** Multiple root nodes merged — split after dedup: **cable rows** (seated, `cable rows.` 7×+2×), **low rows** (`Low rows` 1× — same as seated cable rows, consolidate), **standing rows** (`Standing rows` 1×, `rows. standing barbell.` 2×). These are distinct movements (seated pull vs. standing pull) and should be separate roots.
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
