@@ -3,7 +3,7 @@
 **Source file:** `workouts_start_20230308_end_20260416_num_437.json`  
 **Total unique exercise names:** 594  
 **Candidate groups found:** 43  
-**Generated:** 2026-05-21 22:01:38  
+**Generated:** 2026-05-21 22:03:01  
 
 > This report is for **human review only**. No data has been modified.
 > Each group lists names that may refer to the same exercise.
