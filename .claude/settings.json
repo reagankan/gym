@@ -1,0 +1,107 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Bash cmd=\\(.tool_input.command // \"\" | .[0:120])\"' >> /tmp/claude_agent_log.txt"
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) AGENT spawn desc=\\(.tool_input.description // \"\")\"' >> /tmp/claude_agent_log.txt"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Write file=\\(.tool_input.file_path // \"\")\"' >> /tmp/claude_agent_log.txt"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Edit file=\\(.tool_input.file_path // \"\")\"' >> /tmp/claude_agent_log.txt"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Agent",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(awk *)",
+      "Bash(sed *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(diff *)",
+      "Bash(echo *)",
+      "Bash(date *)",
+      "Bash(pwd*)",
+      "Bash(which *)",
+      "Bash(env*)",
+      "Bash(printenv *)",
+      "Bash(mkdir *)",
+      "Bash(mkdir -p *)",
+      "Bash(touch *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(chmod *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git stash*)",
+      "Bash(python*)",
+      "Bash(python3*)",
+      "Bash(python3 -c *)",
+      "Bash(pytest*)",
+      "Bash(pip install*)",
+      "Bash(pip list*)",
+      "Bash(pip freeze*)",
+      "Bash(pip show*)",
+      "Bash(npm install*)",
+      "Bash(npm test*)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(curl *)",
+      "Bash(bash *)",
+      "Bash(for *)",
+      "Bash(jq *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(rm -rf /*)",
+      "Bash(sudo *)"
+    ]
+  }
+}
