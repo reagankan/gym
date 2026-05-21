@@ -1,9 +1,9 @@
 # Duplicate Exercise Name Candidates
 
 **Source file:** `workouts_start_20230308_end_20260416_num_437.json`  
-**Total unique exercise names:** 654  
-**Candidate groups found:** 52  
-**Generated:** 2026-05-21 21:58:08  
+**Total unique exercise names:** 594  
+**Candidate groups found:** 43  
+**Generated:** 2026-05-21 22:01:38  
 
 > This report is for **human review only**. No data has been modified.
 > Each group lists names that may refer to the same exercise.
@@ -37,6 +37,7 @@
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `Bicep` | 5 | 2023-03-17 | 2023-04-28 |
+| `Bicep 35` | 1 | 2023-05-21 | 2023-05-21 |
 | `Bicep curls.` | 1 | 2024-04-16 | 2024-04-16 |
 | `Bicep curls. Standing together.` | 1 | 2024-04-10 | 2024-04-10 |
 | `Bicep machine. Seat 5.` | 2 | 2024-03-03 | 2024-03-10 |
@@ -45,6 +46,8 @@
 | `Bicep with cable. Face away from cable.` | 1 | 2024-03-14 | 2024-03-14 |
 | `Bicep. 5` | 1 | 2023-04-20 | 2023-04-20 |
 | `Biceps` | 8 | 2023-04-05 | 2024-05-07 |
+| `Biceps 40 separate.` | 1 | 2024-01-03 | 2024-01-03 |
+| `Biceps 40.` | 1 | 2023-11-12 | 2023-11-12 |
 | `Biceps on bench. 30.` | 1 | 2024-02-25 | 2024-02-25 |
 | `Biceps.` | 1 | 2024-05-13 | 2024-05-13 |
 | `Biceps. 35` | 1 | 2023-04-20 | 2023-04-20 |
@@ -133,7 +136,6 @@
 | `tricep press machine.` | 1 | 2026-01-29 | 2026-01-29 |
 | `tricep.` | 2 | 2024-08-03 | 2024-10-20 |
 | `tricep. dumbbell.` | 1 | 2024-10-03 | 2024-10-03 |
-| `tricep. ryan.` | 1 | 2024-09-24 | 2024-09-24 |
 | `tricep. separate. easy machine.` | 1 | 2024-07-25 | 2024-07-25 |
 | `triceps.` | 39 | 2023-03-08 | 2026-01-17 |
 | `triceps. Short flat. Hands close grip` | 1 | 2023-07-27 | 2023-07-27 |
@@ -151,8 +153,6 @@
 | `triceps. overhead. right only.` | 1 | 2025-04-09 | 2025-04-09 |
 | `triceps. overhear cable.` | 1 | 2026-02-04 | 2026-02-04 |
 | `triceps. rope.` | 5 | 2023-11-19 | 2026-01-14 |
-| `triceps. ryan style. but down.` | 1 | 2025-12-04 | 2025-12-04 |
-| `triceps. ryan. separate.` | 1 | 2026-01-21 | 2026-01-21 |
 | `triceps. single down.` | 1 | 2025-03-27 | 2025-03-27 |
 
 ### Group P2 — 139 total appearances
@@ -262,12 +262,11 @@
 | `pull-ups. wide.` | 6 | 2025-05-20 | 2025-09-15 |
 | `pull-ups. wider grip.` | 1 | 2025-06-26 | 2025-06-26 |
 
-### Group P5 — 109 total appearances
+### Group P5 — 107 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `Chest fly` | 2 | 2023-06-06 | 2023-07-29 |
-| `Chest fly 120x6x3` | 2 | 2023-05-24 | 2023-05-29 |
 | `Chest fly.` | 1 | 2025-11-26 | 2025-11-26 |
 | `chest fly bench.` | 1 | 2025-08-28 | 2025-08-28 |
 | `chest fly rear delt machine.` | 1 | 2026-01-04 | 2026-01-04 |
@@ -428,13 +427,26 @@
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
+| `Calves 40` | 1 | 2024-01-03 | 2024-01-03 |
+| `Standing calves` | 1 | 2024-02-01 | 2024-02-01 |
+| `Standing calves. 6 holes. Usually 5.` | 1 | 2024-02-11 | 2024-02-11 |
+| `Standing calves. Height 6 holes.` | 1 | 2024-02-13 | 2024-02-13 |
+| `calves.` | 4 | 2024-10-20 | 2026-03-25 |
+| `seated calves` | 1 | 2024-06-04 | 2024-06-04 |
+| `seated calves.` | 3 | 2024-07-20 | 2024-10-09 |
+| `standing calves.` | 7 | 2024-09-14 | 2025-03-11 |
+
+### Group P15 — 19 total appearances
+
+| Exercise Name | Count | First Seen | Last Seen |
+|---|---|---|---|
 | `Sit-ups` | 2 | 2024-01-09 | 2024-05-13 |
 | `Sit-ups 10` | 1 | 2024-01-30 | 2024-01-30 |
 | `Sit-ups full.` | 1 | 2024-05-05 | 2024-05-05 |
 | `sit-ups` | 2 | 2024-05-15 | 2024-08-10 |
 | `sit-ups.` | 13 | 2024-05-23 | 2026-03-05 |
 
-### Group P15 — 19 total appearances
+### Group P16 — 19 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -443,7 +455,7 @@
 | `forearm curl.` | 1 | 2024-07-05 | 2024-07-05 |
 | `forearm curls.` | 6 | 2024-05-26 | 2024-08-02 |
 
-### Group P16 — 18 total appearances
+### Group P17 — 18 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -458,49 +470,16 @@
 | `low rows. cable.` | 1 | 2026-01-04 | 2026-01-04 |
 | `rows. standing barbell.` | 2 | 2026-03-26 | 2026-04-05 |
 
-### Group P17 — 18 total appearances
+### Group P18 — 13 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
-| `Standing calves` | 1 | 2024-02-01 | 2024-02-01 |
-| `Standing calves. 6 holes. Usually 5.` | 1 | 2024-02-11 | 2024-02-11 |
-| `Standing calves. Height 6 holes.` | 1 | 2024-02-13 | 2024-02-13 |
-| `calves.` | 4 | 2024-10-20 | 2026-03-25 |
-| `seated calves` | 1 | 2024-06-04 | 2024-06-04 |
-| `seated calves.` | 3 | 2024-07-20 | 2024-10-09 |
-| `standing calves.` | 7 | 2024-09-14 | 2025-03-11 |
-
-### Group P18 — 18 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `Seat height. 10` | 1 | 2023-06-13 | 2023-06-13 |
-| `Seat. 3` | 1 | 2023-06-16 | 2023-06-16 |
-| `seat 11.` | 1 | 2024-01-28 | 2024-01-28 |
-| `seat 5.` | 1 | 2025-11-16 | 2025-11-16 |
-| `seat 5. foot 7.` | 1 | 2025-09-17 | 2025-09-17 |
-| `seat 5. no deep stretch` | 1 | 2025-09-15 | 2025-09-15 |
-| `seat 6. better stretch.` | 1 | 2025-09-15 | 2025-09-15 |
-| `seat 6. foot 7.` | 1 | 2025-09-19 | 2025-09-19 |
-| `seat 6.5.` | 1 | 2025-09-17 | 2025-09-17 |
-| `seat 7.` | 1 | 2025-09-24 | 2025-09-24 |
-| `seat all the way back.` | 1 | 2025-09-28 | 2025-09-28 |
-| `seat and legs 5.` | 1 | 2025-11-18 | 2025-11-18 |
-| `seat and legs 7.` | 1 | 2025-11-19 | 2025-11-19 |
-| `seat.` | 1 | 2026-01-30 | 2026-01-30 |
-| `seat. 2.5 holes.` | 1 | 2025-08-12 | 2025-08-12 |
-| `seat. 2.5.` | 2 | 2025-08-15 | 2025-08-15 |
-| `seat. all the way back.` | 1 | 2025-10-16 | 2025-10-16 |
-
-### Group P19 — 12 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
+| `Squats 30 total.` | 1 | 2024-01-09 | 2024-01-09 |
 | `Squats.` | 1 | 2024-02-01 | 2024-02-01 |
 | `squats.` | 10 | 2023-09-08 | 2026-02-02 |
 | `squats. dumbbells.` | 1 | 2025-12-31 | 2025-12-31 |
 
-### Group P20 — 11 total appearances
+### Group P19 — 11 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -512,20 +491,7 @@
 | `side planks` | 2 | 2024-05-15 | 2024-06-17 |
 | `side planks.` | 2 | 2024-05-21 | 2024-07-14 |
 
-### Group P21 — 8 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `Left. 10.` | 1 | 2023-09-26 | 2023-09-26 |
-| `Left. 10. Second half strained.` | 1 | 2023-09-26 | 2023-09-26 |
-| `left 30x10.` | 1 | 2024-08-30 | 2024-08-30 |
-| `left 30x20.` | 1 | 2024-08-30 | 2024-08-30 |
-| `left 30x5. slow.` | 1 | 2024-08-30 | 2024-08-30 |
-| `left arm only.` | 1 | 2024-08-01 | 2024-08-01 |
-| `left knee.` | 1 | 2024-10-25 | 2024-10-25 |
-| `left.` | 1 | 2024-08-03 | 2024-08-03 |
-
-### Group P22 — 7 total appearances
+### Group P20 — 7 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -534,7 +500,7 @@
 | `low pull.` | 1 | 2023-04-03 | 2023-04-03 |
 | `pull machine.` | 1 | 2026-03-25 | 2026-03-25 |
 
-### Group P23 — 7 total appearances
+### Group P21 — 7 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -544,18 +510,7 @@
 | `deadlift. cables.` | 1 | 2025-11-29 | 2025-11-29 |
 | `deadlifts.` | 1 | 2026-02-24 | 2026-02-24 |
 
-### Group P24 — 7 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `Right. 10! Fast. Feel the pump/tingles.` | 1 | 2023-09-26 | 2023-09-26 |
-| `Right. 10. Last one tuff.` | 1 | 2023-09-26 | 2023-09-26 |
-| `Right. 50x13.` | 1 | 2024-04-16 | 2024-04-16 |
-| `Right. 55x9.5. Pinky destroyed.` | 1 | 2024-04-16 | 2024-04-16 |
-| `right only.` | 2 | 2025-03-25 | 2025-10-15 |
-| `right.` | 1 | 2024-08-03 | 2024-08-03 |
-
-### Group P25 — 5 total appearances
+### Group P22 — 5 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -565,7 +520,7 @@
 | `Face pulls. Stagger stance. Height 3.` | 1 | 2024-01-15 | 2024-01-15 |
 | `face pulls. rope.` | 1 | 2026-01-03 | 2026-01-03 |
 
-### Group P26 — 5 total appearances
+### Group P23 — 5 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -573,7 +528,7 @@
 | `jeff nippard lat raises. right only.` | 1 | 2025-09-19 | 2025-09-19 |
 | `jeff nippard. lat raises.` | 3 | 2025-08-27 | 2025-10-03 |
 
-### Group P27 — 4 total appearances
+### Group P24 — 4 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -581,16 +536,7 @@
 | `Flutter kicks` | 2 | 2024-05-02 | 2024-05-13 |
 | `Flutter kicks.` | 1 | 2024-05-05 | 2024-05-05 |
 
-### Group P28 — 4 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `pushups` | 1 | 2024-07-11 | 2024-07-11 |
-| `pushups with ryan’s vest` | 1 | 2024-06-17 | 2024-06-17 |
-| `pushups.` | 1 | 2024-08-25 | 2024-08-25 |
-| `pushups. wide. rice.` | 1 | 2024-11-07 | 2024-11-07 |
-
-### Group P29 — 4 total appearances
+### Group P25 — 4 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -598,7 +544,7 @@
 | `leg curl.` | 1 | 2025-04-05 | 2025-04-05 |
 | `seated leg curl.` | 1 | 2026-01-30 | 2026-01-30 |
 
-### Group P30 — 4 total appearances
+### Group P26 — 4 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -607,29 +553,7 @@
 | `Hammer curls. 2 reps` | 1 | 2023-06-11 | 2023-06-11 |
 | `arm curls.` | 1 | 2025-08-22 | 2025-08-22 |
 
-### Group P31 — 4 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `Home gym.` | 3 | 2023-11-27 | 2024-04-16 |
-| `Home gym. First gym after Covid.` | 1 | 2024-04-10 | 2024-04-10 |
-
-### Group P32 — 3 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `san diego big gym.` | 1 | 2026-03-13 | 2026-03-13 |
-| `san diego.` | 2 | 2024-11-27 | 2025-11-25 |
-
-### Group P33 — 3 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `Leg raises 10x3` | 1 | 2023-04-28 | 2023-04-28 |
-| `Leg raises 15x3` | 1 | 2023-05-03 | 2023-05-03 |
-| `leg raises.` | 1 | 2023-05-04 | 2023-05-04 |
-
-### Group P34 — 3 total appearances
+### Group P27 — 3 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
@@ -637,61 +561,48 @@
 | `rear delt.` | 1 | 2026-01-04 | 2026-01-04 |
 | `rear delts.` | 1 | 2024-08-30 | 2024-08-30 |
 
-### Group P35 — 2 total appearances
+### Group P28 — 3 total appearances
+
+| Exercise Name | Count | First Seen | Last Seen |
+|---|---|---|---|
+| `pushups` | 1 | 2024-07-11 | 2024-07-11 |
+| `pushups.` | 1 | 2024-08-25 | 2024-08-25 |
+| `pushups. wide. rice.` | 1 | 2024-11-07 | 2024-11-07 |
+
+### Group P29 — 2 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `galileo leg press.` | 1 | 2026-04-05 | 2026-04-05 |
 | `galileo leg press. basically pilates.` | 1 | 2026-01-22 | 2026-01-22 |
 
-### Group P36 — 2 total appearances
+### Group P30 — 2 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `Chin up.` | 1 | 2024-05-10 | 2024-05-10 |
 | `chin up 2.` | 1 | 2024-05-13 | 2024-05-13 |
 
-### Group P37 — 2 total appearances
+### Group P31 — 2 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `Low row.` | 1 | 2023-03-08 | 2023-03-08 |
 | `low row cable. dead lift.` | 1 | 2025-11-28 | 2025-11-28 |
 
-### Group P38 — 2 total appearances
+### Group P32 — 2 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `bayesian curls.` | 1 | 2026-01-03 | 2026-01-03 |
 | `bayesian curls. right only.` | 1 | 2025-04-09 | 2025-04-09 |
 
-### Group P39 — 2 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `at home.` | 1 | 2024-09-25 | 2024-09-25 |
-| `at home. five pound increments only.` | 1 | 2025-11-17 | 2025-11-17 |
-
-### Group P40 — 2 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `just hang.` | 1 | 2025-07-19 | 2025-07-19 |
-| `just hang. again.` | 1 | 2025-07-19 | 2025-07-19 |
-
-### Group P41 — 2 total appearances
+### Group P33 — 2 total appearances
 
 | Exercise Name | Count | First Seen | Last Seen |
 |---|---|---|---|
 | `Sit ups` | 1 | 2024-05-07 | 2024-05-07 |
 | `Sit ups. 10.` | 1 | 2024-01-25 | 2024-01-25 |
-
-### Group P42 — 2 total appearances
-
-| Exercise Name | Count | First Seen | Last Seen |
-|---|---|---|---|
-| `stop cuz shoulder.` | 1 | 2024-08-03 | 2024-08-03 |
-| `stop.` | 1 | 2025-05-22 | 2025-05-22 |
 
 ## Fuzzy / Root Matches
 

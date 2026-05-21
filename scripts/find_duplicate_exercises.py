@@ -100,26 +100,53 @@ QUALIFIER_WORDS = {
 # Heuristics to detect note/log entries that are not exercise names.
 NOTE_PATTERNS = [
     re.compile(r"^https?://"),
-    re.compile(r"^\d+x\d+"),                       # set notation like "90x8"
-    re.compile(r"^0x\d+"),                          # bodyweight set
-    re.compile(r"^\d+\.\d+\s"),                     # decimal weight
+    re.compile(r"^\d+x\d+"),                         # set notation like "90x8"
+    re.compile(r"^0x\d+"),                            # bodyweight set
+    re.compile(r"^\d+\.\d+\s"),                       # decimal weight
+    re.compile(r"\d+x\d+"),                           # weight×rep notation anywhere: "Hammer 27.5x10..."
     re.compile(r"goal\.", re.I),
     re.compile(r"push hard", re.I),
     re.compile(r"nothing\.", re.I),
     re.compile(r"lower back bent", re.I),
-    # Date entries: "Aug 7", "August 21", "April03", "July 30", "April6"
+    # Date entries: "Aug 7", "August 21", "April 25", "July 14"
     re.compile(
-        r"^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\s*\d",
+        r"^(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|"
+        r"jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|"
+        r"dec(?:ember)?)\s*\d",
         re.I,
     ),
-    # Person-name + weight notation: "Mohan 25", "Reagan 100x10x2. 115x6"
-    re.compile(r"^[A-Z][a-z]+\s+\d"),
-    # Date-code like "April03", "April5"
-    re.compile(r"^[A-Z][a-z]+\d+$"),
+    # "Gym may 21", "November27", "November 27" style date headers
+    re.compile(r"^gym\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", re.I),
+    re.compile(r"^november\d", re.I),
+    # Person-name + weight/number notation: "Mohan 25", "Reagan 100x10x2"
+    re.compile(r"^(?:mohan|reagan)\b", re.I),
+    # Time/seat/location log entries
+    re.compile(r"^start\s+time\b", re.I),
+    re.compile(r"^end\s+time\b", re.I),
+    re.compile(r"^seat\b", re.I),                     # "seat 5.", "seat all the way back."
+    re.compile(r"^(?:san\s+diego|at\s+home)\b", re.I),  # location entries
+    # Unilateral set notes that are NOT exercise names
+    # "Left 60x5. Elbow hurts", "Right. 10!", "right only." when standalone
+    re.compile(r"^(?:left|right)\s+\d"),              # "Left 60x5..." "Right. 50x13"
+    re.compile(r"^(?:left|right)\.\s"),               # "Left. 10." "Right. 10!"
 ]
 
-# Exact normalised names that are end-of-workout markers, not exercises.
-NAME_STOPLIST = frozenset({"done", "home"})
+# Exact normalised names (after strip_trailing_punct + lower) that are
+# end-of-workout markers, location tags, or other non-exercise tokens.
+NAME_STOPLIST = frozenset({
+    "done",
+    "home",
+    "home gym",
+    "stop",
+    "left",
+    "right",
+    "just hang",
+    "two sets",
+    "three sets",
+    "four sets",
+    "five sets",
+    "back",           # bare "back." is too ambiguous to be useful
+})
 
 MAX_EXERCISE_NAME_LEN = 60
 
@@ -151,23 +178,42 @@ def is_exercise_name(s: str) -> bool:
     for pat in NOTE_PATTERNS:
         if pat.search(s):
             return False
-    # Stoplist: end-of-workout markers and other non-exercise tokens
-    if normalise(s) in NAME_STOPLIST:
+    # Stoplist: end-of-workout markers, location tags, and other non-exercise tokens
+    norm = normalise(s)
+    if norm in NAME_STOPLIST:
         return False
-    # "two sets", "three sets" etc. are not exercise names
-    if re.match(r"^(two|three|four|five)\s+sets?\.?$", s, re.I):
-        return False
-    # Names that end with a person's name or a note word are workout log entries
-    # e.g. "Bicep Mohan.", "Biceps sore."
-    if re.search(r"\b(mohan|reagan|sore|hurt|hurts|elbow|wrist|pain)\b", s, re.I):
-        return False
-    # Context notes: "after a nap.", "after nap.", "Gym may 21"
-    if re.match(r"^after\b", s, re.I):
-        return False
-    if re.match(r"^gym\s+(may|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b", s, re.I):
-        return False
-    # Variants of "done" with trailing notes
-    if re.match(r"^done\b", s, re.I):
+    # Prefix-stoplist: anything starting with these normalised prefixes is noise
+    NOISE_PREFIXES = (
+        "done",           # "done.", "done. elbows sore.", "DONE."
+        "stop.",          # "stop.", "stop cuz shoulder.", "stop right elbow."
+        "stop ",
+        "home.",          # "home.", "home circuits with ryan."
+        "home ",
+        "just hang",      # "just hang.", "just hang. again."
+        "after ",         # "after a nap.", "after nap."
+        "left arm",       # "left arm only."
+        "left knee",      # "left knee."
+        "left shoulder",  # "left shoulder sore"
+        "left side",      # "left side pain is gone."
+        "left wrist",     # "left wrist could not."
+        "left.",          # "left." standalone
+        "left 3",         # "left 30x10.", "left 30x20.", "left 30x5."
+        "right only",     # "right only."
+        "right.",         # "right." standalone
+        "back. all",      # "back. all the way back." — machine note
+        "leg 5",          # "leg 5." — seat/height setting
+        "legs 3",         # "legs 3." — seat/height setting
+        "legs 5",         # "legs 5." — seat/height setting
+        "legs. 5",        # "legs. 5." — seat/height setting
+        "incline. 15",    # "incline. 15." — bench angle setting
+        "incline. 7",     # "incline. 7."
+    )
+    for prefix in NOISE_PREFIXES:
+        if norm.startswith(prefix):
+            return False
+    # Dismiss entries that contain person names used as workout-buddy annotations
+    # or injury/body-state notes
+    if re.search(r"\b(mohan|reagan|ryan|sore|hurt|hurts|pain|swollen|numb|burning)\b", s, re.I):
         return False
     return True
 
