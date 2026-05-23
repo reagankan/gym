@@ -91,6 +91,20 @@ When Kiro is used as a delegate, checkpoints nest:
 ```
 Claude references Kiro's logs but never modifies them.
 
+## Cross-Task Memory (`.agents/memory.md`)
+
+A project-wide, append-only scratchpad for thinking that should outlive a single task — hunches, dead ends, cross-task insights, deferred questions. Distinct from `plan.md` (current state, overwriteable) and `findings/` (cited evidence per task).
+
+**Ownership:**
+- **Research loop writes** — researcher logs `## Hunches`, `## Dead ends`, `## Open questions`; research-orchestrator logs `## Cross-task insights`.
+- **Dev loop reads only** — orchestrator reads at PLAN to surface known constraints, but does not write.
+
+**Structure:** index file at `.agents/memory.md` capped at ~200 lines. Topic spill at `.agents/memory/<topic>.md`. Archive (never delete) at `.agents/memory/archive-<YYYYMM>.md`.
+
+**Entry format:** `[T=N | <ISO ts> | <task-name> | <commit-sha-short>] body` — the commit hash anchors each entry to a recoverable git state if compute dies mid-task.
+
+**Restart protocol:** orchestrators read `memory.md` at ORIENT/PLAN before any other action. This is what makes the file actually pay off — without it, memory.md becomes write-only and accretes without informing future work.
+
 ## Audit Logging
 
 Hooks in `hooks/settings.json` log Bash, Agent, Write, and Edit tool calls to `/tmp/claude_agent_log.txt`.

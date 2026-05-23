@@ -23,6 +23,7 @@ For each finding, report:
 3. **Performance** — O(n²) when O(n) is possible? Unbatched I/O in loops?
 4. **Simplicity** — Could this be simpler? Over-engineered for the use case?
 5. **Style** — Matches existing codebase conventions?
+6. **Lint compatibility** — Does the code respect the project's static-analysis config (e.g., `analysis_options.yaml`, `.eslintrc`, `pyproject.toml [tool.ruff]`, `tsconfig.json` strict flags)? Flag violations CI is likely to fail on (unused imports, missing annotations, info-level diagnostics treated as fatal).
 
 ## Performance Deep-Dive
 

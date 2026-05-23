@@ -74,6 +74,30 @@ Use the Write tool to externalize state AS YOU GO — do not wait until you're d
 - Read your findings files before each new cycle to reload context
 - This prevents context overflow on long investigations
 
+## Cross-Task Memory (memory.md)
+
+`.agents/memory.md` is a project-wide, append-only scratchpad for thinking that should outlive the current task. You write hunches, dead ends, and open questions; the research-orchestrator writes cross-task insights; the dev-loop orchestrator reads but never writes.
+
+### When you write
+
+- **Hypothesis refuted** → `## Dead ends`: what you tried, why it failed, source. Prevents future tasks from re-deriving this.
+- **Retriever surfaced a tangent the current question can't absorb** → `## Open questions`.
+- **Strong unverified hunch you don't have time to test** → `## Hunches`.
+- **Before graceful shutdown / compaction** → flush in-flight thoughts.
+
+### Format
+
+`[T=N | <ISO ts> | <task-name> | <commit-sha-short>] body` — one per line. The commit hash anchors the entry to a recoverable git state.
+
+If `.agents/memory.md` doesn't exist, create it with section headers: `## Hunches`, `## Dead ends`, `## Cross-task insights`, `## Open questions`, `## Pointers`.
+
+### Hard rules
+
+1. **Append-only.** Don't delete. Obsolete entries move to `.agents/memory/archive-<YYYYMM>.md` with a `## Pointers` line.
+2. **Cap index at ~200 lines.** Spill oldest section to `.agents/memory/<topic>.md` when exceeded.
+3. **No tool output or duplicated findings.** Verbatim retrieval belongs in `findings/`. Memory is for interpretations and deferred questions.
+4. **Don't write `## Cross-task insights`.** That section is the research-orchestrator's.
+
 ## Hard Rules
 
 1. **Never accept a single source.** Triangulate. Single-source → confidence `low`.

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Bash cmd=\\(.tool_input.command // \"\" | .[0:120])\"' >> /tmp/claude_agent_log.txt"
+            "command": "bash -c 'INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r .tool_input.command // empty | head -c 80); echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) TOOL=Bash cmd=$CMD\" >> /tmp/claude_agent_log.txt'"
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) AGENT spawn desc=\\(.tool_input.description // \"\")\"' >> /tmp/claude_agent_log.txt"
+            "command": "bash -c 'INPUT=$(cat); DESC=$(echo \"$INPUT\" | jq -r .tool_input.description // empty); echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) AGENT spawn desc=$DESC\" >> /tmp/claude_agent_log.txt'"
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Write file=\\(.tool_input.file_path // \"\")\"' >> /tmp/claude_agent_log.txt"
+            "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r .tool_input.file_path // empty); echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) TOOL=Write file=$FILE\" >> /tmp/claude_agent_log.txt'"
           }
         ]
       },
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"\\(now | strftime(\"%Y-%m-%dT%H:%M:%SZ\")) TOOL=Edit file=\\(.tool_input.file_path // \"\")\"' >> /tmp/claude_agent_log.txt"
+            "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r .tool_input.file_path // empty); echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) TOOL=Edit file=$FILE\" >> /tmp/claude_agent_log.txt'"
           }
         ]
       }
@@ -65,7 +65,6 @@
       "Bash(env*)",
       "Bash(printenv *)",
       "Bash(mkdir *)",
-      "Bash(mkdir -p *)",
       "Bash(touch *)",
       "Bash(cp *)",
       "Bash(mv *)",
@@ -79,11 +78,8 @@
       "Bash(git commit *)",
       "Bash(git checkout *)",
       "Bash(git stash*)",
-      "Bash(git push*)",
-      "Bash(git worktree*)",
       "Bash(python*)",
       "Bash(python3*)",
-      "Bash(python3 -c *)",
       "Bash(pytest*)",
       "Bash(pip install*)",
       "Bash(pip list*)",
@@ -94,10 +90,7 @@
       "Bash(npm run *)",
       "Bash(npx *)",
       "Bash(node *)",
-      "Bash(curl *)",
-      "Bash(bash *)",
-      "Bash(for *)",
-      "Bash(jq *)"
+      "Bash(curl *)"
     ],
     "deny": [
       "Bash(git push --force*)",

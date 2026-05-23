@@ -70,6 +70,31 @@ Expanded:
 
 Max 50 iterations. If still failing after 50, mark BLOCKED.
 
+## Manifest Discipline
+
+At PLAN phase, before writing plan.md, stamp the agent + target versions so future readers know exactly what config produced this checkpoint:
+
+```bash
+~/shared/agents-repo/scripts/write-manifest.sh <task-name> claude start
+```
+
+This writes `.agents/checkpoints/<task-name>/manifest/start.json` with agents-repo SHA, target-repo SHA, and (if dirty) `start.diff` + `start.untracked.tar.gz` for full reproducibility.
+
+At COMPLETE / BLOCKED / TIMEOUT_SAVED, run again with `end`:
+
+```bash
+~/shared/agents-repo/scripts/write-manifest.sh <task-name> claude end
+```
+
+If `start.json` and `end.json` SHAs differ, the user pulled agents-repo changes mid-session — flag it in plan.md.
+
+After writing the start manifest, copy its key fields into plan.md's header so they're visible at a glance:
+
+```markdown
+## Agent Config: agents-repo@<sha>[-dirty] | runtime: claude
+## Target: <project>@<sha>
+```
+
 ## Checkpoint Discipline
 
 After EVERY sub-agent return:
@@ -162,6 +187,14 @@ git commit -m "<phase>: <what was accomplished>"
 - `timeout: saving progress at T=N` — graceful shutdown
 
 Do NOT wait until the task is fully complete to commit. Incremental progress > perfect history. The git log IS the recovery mechanism if compute dies.
+
+## Cross-Task Memory (memory.md) — READ-ONLY
+
+`.agents/memory.md` is a project-wide scratchpad written by the research loop. The dev loop **reads it but never writes to it**.
+
+At PLAN phase, before creating plan.md, read `.agents/memory.md`. Past dead ends and open questions logged by the research loop may inform retriever queries, surface known constraints, or suggest hunches worth turning into a code path.
+
+If a finding from this dev task feels like it belongs in cross-task memory, surface it in your final report — the user can decide to run the research loop to capture it.
 
 ## Time Management
 
