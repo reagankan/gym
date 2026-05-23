@@ -1,0 +1,21 @@
+{
+  "phase": "end",
+  "timestamp": "2026-05-04T05:18:11Z",
+  "task": "61-multi-app-oracle-deployment",
+  "runtime": "unknown",
+  "backfilled": true,
+  "method": "mtime-based",
+  "method_note": "Backfilled from file mtimes in checkpoint dir. The agents-repo SHA is the commit that was HEAD when the file was written, NOT necessarily the agent config that ran (which may have been an installed copy). Treat as best-effort attribution.",
+  "agents_repo": {
+    "path": "/home/reaganka/shared/agents-repo",
+    "sha": "4745277",
+    "lookup_method": "git rev-list -1 --before=<mtime> HEAD",
+    "lookup_input_mtime": "2026-05-04T05:18:11Z"
+  },
+  "target_repo": {
+    "path": "/shared/user/gym",
+    "sha_at_backfill_time": "ba3c180",
+    "branch_at_backfill_time": "main",
+    "caveat": "SHA recorded at backfill time, NOT during the original session"
+  }
+}
