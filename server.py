@@ -12,13 +12,13 @@ from pathlib import Path
 from flask import Flask, jsonify, Response, send_from_directory
 
 # Stub macnotesapp so importing main.py doesn't fail on Linux
-if 'macnotesapp' not in sys.modules:
-    _stub = types.ModuleType('macnotesapp')
-    class _NotAvailable:
-        def __call__(self, *a, **kw):
-            raise ImportError("macnotesapp is not available on this platform (macOS only)")
-    _stub.NotesApp = _NotAvailable()
-    sys.modules['macnotesapp'] = _stub
+# if 'macnotesapp' not in sys.modules:
+#     _stub = types.ModuleType('macnotesapp')
+#     class _NotAvailable:
+#         def __call__(self, *a, **kw):
+#             raise ImportError("macnotesapp is not available on this platform (macOS only) XXX")
+#     _stub.NotesApp = _NotAvailable()
+#     sys.modules['macnotesapp'] = _stub
 
 from config_utils import refresh_config
 from main import extract_exercise_weights
