@@ -2,7 +2,7 @@ from config_utils import refresh_config, get_config, ConfigKey
 from notes_utils import get_notes
 from parser_utils import parse_html, parse_workout
 from date_utils import infer_workout_date_range
-from io_utils import save_workouts_to_json, load_workouts_from_json
+from io_utils import save_workouts_to_json, load_workouts_from_json, WORKOUTS_DIR
 from plot_utils import plot_exercise_boxplot
 from stats_utils import remove_outliers
 
@@ -148,7 +148,7 @@ def main():
 
     if args.process_cache is not None:
         # If we don’t know the cache filename in advance, we infer it by scanning for existing JSON files
-        json_files = list(Path(".").glob("workouts_start_*_end_*_num_*.json"))
+        json_files = list(WORKOUTS_DIR.glob("workouts_start_*_end_*_num_*.json"))
         if not json_files:
             print("No cache files found. Run --update-cache first.")
             return None

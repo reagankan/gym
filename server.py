@@ -23,6 +23,7 @@ from flask import Flask, jsonify, Response, send_from_directory
 from config_utils import refresh_config
 from main import extract_exercise_weights
 from plot_utils import plot_exercise_boxplot
+from io_utils import WORKOUTS_DIR
 
 app = Flask(__name__)
 
@@ -170,7 +171,7 @@ def update_cache():
 @app.route("/api/process-cache", methods=["POST"])
 def process_cache():
     try:
-        json_files = list(Path(PROJECT_DIR).glob("workouts_start_*_end_*_num_*.json"))
+        json_files = list(Path(WORKOUTS_DIR).glob("workouts_start_*_end_*_num_*.json"))
         if not json_files:
             return jsonify(error="No cache files found. Run Update Data first."), 404
 
@@ -199,7 +200,7 @@ def process_cache():
 def process_cache_stream():
     def generate():
         try:
-            json_files = list(Path(PROJECT_DIR).glob("workouts_start_*_end_*_num_*.json"))
+            json_files = list(Path(WORKOUTS_DIR).glob("workouts_start_*_end_*_num_*.json"))
             if not json_files:
                 yield 'data: {"error": "No cache files found. Run Update Data first."}\n\n'
                 return

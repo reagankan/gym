@@ -1,14 +1,17 @@
 import json
 from pathlib import Path
 
+WORKOUTS_DIR = Path(".", "workouts")
+
 def save_workouts_to_json(workouts, start_date, end_date, num_dates):
     """
     Save processed workouts to a JSON file.
     """
     filename = f"workouts_start_{start_date}_end_{end_date}_num_{num_dates}.json"
-    with open(filename, "w", encoding="utf-8") as f:
+    file_path = Path(WORKOUTS_DIR, filename)
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(workouts, f, ensure_ascii=False, indent=2)
-    print(f"Saved {len(workouts)} workouts to {filename}")
+    print(f"Saved {len(workouts)} workouts to {file_path}")
 
 
 def load_workouts_from_json(start_date, end_date, num_dates):
@@ -17,7 +20,7 @@ def load_workouts_from_json(start_date, end_date, num_dates):
     Returns the list of workouts, or None if file not found.
     """
     filename = f"workouts_start_{start_date}_end_{end_date}_num_{num_dates}.json"
-    file_path = Path(filename)
+    file_path = Path(WORKOUTS_DIR, filename)
     if not file_path.exists():
         return None
 
