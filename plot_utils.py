@@ -109,7 +109,7 @@ def plot_exercise_boxplot(exercise_name, exercise_data):
 
     # label things.
     date_index, pr = get_personal_record(weights)
-    plt.title(f"{exercise_name}\n{dates[date_index]}:{pr}")
+    plt.title(f"{exercise_name}\n{dates[date_index]}:{pr}\nn_datapoints={len(dates)}", pad=20)
     plt.xlabel("Date")
 
 
