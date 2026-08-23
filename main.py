@@ -10,6 +10,7 @@ import argparse
 import json
 import re
 from pathlib import Path
+from typing import Tuple
 
 DATE_PATTERN = re.compile(r"^2\d{3}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$")
 
@@ -56,13 +57,17 @@ def parse_weight(line, parse_as_reps=False):
 
 from collections import defaultdict
 
-def extract_exercise_weights(workouts):
+def extract_exercise_weights(workouts, excerise_key=lambda line: line.strip().lower()):
     """
     Returns:
         dict[exercise_name][date] -> list[weights]
     """
 
     rep_exercises = get_config(ConfigKey.REP_EXERCISES)
+
+    exercise_to_raw_map = defaultdict(set) # one to many
+    raw_to_exercise_map = defaultdict(set) # many to one
+    raw_to_date_map = defaultdict(set) # one to many
 
 
     data = defaultdict(lambda: defaultdict(list))
@@ -77,17 +82,24 @@ def extract_exercise_weights(workouts):
             if not isinstance(block, list) or not block:
                 continue
 
-            exercise = block[0].strip().lower()
+            exercise = excerise_key(block[0])
 
-            if exercise in {"done.", "done"}:
-                continue
+            # I forget what edge case would have "done" be the start of a block.
+            # if exercise in {"done.", "done"}:
+            #     continue
 
             for line in block[1:]:
                 weight = parse_weight(line, parse_as_reps=(rep_exercises and exercise in rep_exercises))
                 if weight is not None and weight > 0:
                     data[exercise][date].append(weight)
 
-    return data
+                    exercise_to_raw_map[exercise].add(block[0])
+                    raw_to_exercise_map[block[0]].add(exercise)
+                    raw_to_date_map[block[0]].add(date)
+                else:
+                    print(f"weight is None or weight <= 0: {date}, {exercise}, {weight}")
+
+    return data, exercise_to_raw_map, raw_to_exercise_map, raw_to_date_map
 
 def demo():
     workouts = get_workouts()
@@ -144,11 +156,115 @@ def main():
     args = parser.parse_args()
 
     if args.list:
-        exercise_data = extract_exercise_weights(load_cache())
-        print(type(exercise_data))
-        print(exercise_data.keys())
-        print(exercise_data.get('abs core.'))
 
+        cache = load_cache()
+
+        exercises1, ev1, raw2exercisev1, raw2datev1 = extract_exercise_weights(cache)
+
+
+
+        # raw string --> exercise 
+
+        # problem 1. many to one mapping.
+        # currently, there are many raw strings that not mapped properly.
+        # e.g. 'triceps. overhear cable.', 'triceps. bar pull-down.' are separate.
+        # we'd want to be able to map them to the same 'triceps' exercise.
+
+        # problem 2.
+        # exercise has many levels.
+        # <name> <variant 1> <variant 2>
+        # --process-cache should let use match on name, then variants as deep as possible.
+        # e.g. python main.py "biceps" will match all biceps
+        # e.g. python main.py "biceps. ez curl." will match all biceps and then further match for just biceps on ez curl.
+
+
+        from dataclasses import dataclass, field, InitVar
+        from typing import Tuple
+
+        @dataclass(frozen=True)
+        class Exercise:
+            raw: str
+            tokens: Tuple[str, ...] = field(init=False)
+
+            def __post_init__(self):
+                # Process the raw string into tokens
+                processed_tokens = tuple(
+                    token.strip().rstrip(".") 
+                    for token in self.raw.lower().strip().split(".")
+                    if token.strip()
+                )
+                # hack: object.__setattr__ because frozen=True prevents normal assignment
+                object.__setattr__(self, 'tokens', processed_tokens)
+
+            def num_levels(self):
+                return len(self.tokens)
+
+
+        def _experimental_exercise_grouping_fn(line):
+            return line.strip().rstrip(".")
+
+        exercises2, ev2, raw2exercisev2, raw2datev2 = extract_exercise_weights(cache, excerise_key=Exercise)
+
+
+        print(len(exercises1), len(ev1))
+        print(len(exercises2), len(ev2))
+        print()
+
+
+        print("ev1: ", len(ev1))
+        print("ev2: ", len(ev2))
+
+        print("intersection: ", len(ev1.keys() & ev2.keys()))
+        print("ev1 - ev2: ", len(ev1.keys() - ev2.keys()))
+        print("ev2 - ev1: ", len(ev2.keys() - ev1.keys()))
+
+        print(ev1.keys())
+
+
+        assert(raw2exercisev1.keys() & raw2exercisev2.keys() == raw2exercisev1.keys())
+        assert(raw2exercisev1.keys() & raw2exercisev2.keys() == raw2exercisev2.keys())
+
+
+
+        top_to_raw = defaultdict(set)
+        second_to_raw = defaultdict(set)
+        third_to_raw = defaultdict(set)
+
+        for i, (raw, exercise_set) in enumerate(raw2exercisev2.items()):
+
+            if raw.lower().startswith("bicep"):
+                v1 = raw2exercisev1.get(raw)
+                v2 = raw2exercisev2.get(raw)
+
+                v1_dates = raw2datev1.get(raw)
+                v2_dates = raw2datev2.get(raw)
+
+                print("=========")
+                print(f"v1-raw: {raw} --> {v1}")
+                print(f"v1 dates: {v1_dates}")
+                print(f"v2-raw: {raw} --> {v2}")
+                print(f"v2 dates: {v2_dates}")
+                print("=========")
+
+            assert(len(exercise_set) == 1)
+            exercise = list(exercise_set)[0]
+
+            n = exercise.num_levels()
+
+            if n >= 1:
+                top_to_raw[exercise.tokens[0]].add(raw)
+
+            if n >= 2:
+                second_to_raw[exercise.tokens[1]].add(raw)
+
+            if n >= 3:
+                third_to_raw[exercise.tokens[2]].add(raw)
+
+
+        print(f"number of raw blocks: {len(raw2exercisev1)}")
+        print(f"number of tier 1: {len(top_to_raw)}")
+        print(f"number of tier 2: {len(second_to_raw)}")
+        print(f"number of tier 3: {len(third_to_raw)}")
 
 
     if args.update_cache:
@@ -160,7 +276,7 @@ def main():
 
     if args.process_cache is not None:
 
-        exercise_data = extract_exercise_weights(load_cache())
+        exercise_data, _ , _, _ = extract_exercise_weights(load_cache())
 
         # TODO: find a smarter way to separate machines/movements or normalize into the same plot.
         # removing outliers across all dataset dates is inconsistent.
