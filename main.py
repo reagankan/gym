@@ -2,7 +2,7 @@ from config_utils import refresh_config, get_config, ConfigKey
 from notes_utils import get_notes
 from parser_utils import parse_html, parse_workout
 from date_utils import infer_workout_date_range
-from io_utils import save_workouts_to_json, load_workouts_from_json, WORKOUTS_DIR
+from io_utils import save_workouts_to_json, load_workouts_from_json, WORKOUTS_DIR, load_cache
 from plot_utils import plot_exercise_boxplot
 from stats_utils import remove_outliers
 
@@ -119,6 +119,10 @@ def main():
         help='Load workouts from cache. Optionally specify exercises (e.g. --process-cache "bench." "biceps." or "all")'
     )
 
+
+    # read only operations (helpful for developing)
+    parser.add_argument("--list", action="store_true", help="returns unique exercises")
+
     """
     "incline bench. dumbbells.", incline shoulder press.
     "bench.",
@@ -139,39 +143,24 @@ def main():
 
     args = parser.parse_args()
 
+    if args.list:
+        exercise_data = extract_exercise_weights(load_cache())
+        print(type(exercise_data))
+        print(exercise_data.keys())
+        print(exercise_data.get('abs core.'))
+
+
+
     if args.update_cache:
         print("Updating cache from Notes...")
         workouts = get_workouts()
         start_date, end_date, num_dates = infer_workout_date_range(workouts)
         save_workouts_to_json(workouts, start_date, end_date, num_dates)
-        return
+        return None
 
     if args.process_cache is not None:
-        # If we don’t know the cache filename in advance, we infer it by scanning for existing JSON files
-        json_files = list(WORKOUTS_DIR.glob("workouts_start_*_end_*_num_*.json"))
-        if not json_files:
-            print("No cache files found. Run --update-cache first.")
-            return None
 
-        NUM_RE = re.compile(r"_num_(\d+)\.json$")
-        def extract_num_days(path: Path) -> int:
-            m = NUM_RE.search(path.name)
-            return int(m.group(1)) if m else -1
-
-        # pick file with largest num_*
-        chosen_file = max(json_files, key=extract_num_days)
-
-        # # Pick the latest file (optional: could sort by start_date or end_date)
-        # chosen_file = sorted(json_files)[-1]
-
-        print(f"Processing cache: {chosen_file}")
-        with open(chosen_file, "r", encoding="utf-8") as f:
-            workouts = json.load(f)
-
-        for i in range(5):
-            print(workouts[i])
-
-        exercise_data = extract_exercise_weights(workouts)
+        exercise_data = extract_exercise_weights(load_cache())
 
         # TODO: find a smarter way to separate machines/movements or normalize into the same plot.
         # removing outliers across all dataset dates is inconsistent.
