@@ -22,6 +22,7 @@ Computes start_date, end_date, num_dates
 Saves JSON cache only if it doesn’t already exist
 ```
 
+`export PYTHONHASHSEED=0`
 `python main.py --process-cache`
 
 ```

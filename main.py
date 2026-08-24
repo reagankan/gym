@@ -57,7 +57,7 @@ def parse_weight(line, parse_as_reps=False):
 
 from collections import defaultdict
 
-def extract_exercise_weights(workouts, excerise_key=lambda line: line.strip().lower()):
+def extract_exercise_weights(workouts, excerise_key):
     """
     Returns:
         dict[exercise_name][date] -> list[weights]
@@ -153,13 +153,16 @@ def main():
     "bicep preacher machine."
     """
 
+    def _default_exercise_key(line):
+        return line.strip().lower()
+
+
     args = parser.parse_args()
 
     if args.list:
 
-        cache = load_cache()
-
-        exercises1, ev1, raw2exercisev1, raw2datev1 = extract_exercise_weights(cache)
+        cache, _ = load_cache()
+        exercises1, ev1, raw2exercisev1, raw2datev1 = extract_exercise_weights(cache, exercise_key=_default_exercise_key)
 
 
 
@@ -276,7 +279,15 @@ def main():
 
     if args.process_cache is not None:
 
-        exercise_data, _ , _, _ = extract_exercise_weights(load_cache())
+
+        # metadata: exercise mapping config
+        EXERCISE_KEY = _default_exercise_key
+        # EXERCISE_KEY = Exercise
+
+
+
+        cache, cache_filename = load_cache()
+        exercise_data, _ , _, _ = extract_exercise_weights(cache, excerise_key=EXERCISE_KEY)
 
         # TODO: find a smarter way to separate machines/movements or normalize into the same plot.
         # removing outliers across all dataset dates is inconsistent.
@@ -284,16 +295,49 @@ def main():
         # e.g. BAD for "calf calves.", when I moved from standing to seated machines.
         # exercise_data = remove_outliers(exercise_data)
 
+        show_plot = True
         if len(args.process_cache) == 0:
             exercises_to_plot = ["biceps."]
         elif len(args.process_cache) == 1 and args.process_cache[0].lower() == "all":
             exercises_to_plot = sorted(exercise_data.keys())
+            show_plot=False
         else:
             exercises_to_plot = [e.lower() for e in args.process_cache]
 
+
+        ### save stats
+        stats_dict = {}
+
+
+
+        ### save plots
+        exercise_to_num_datapoints = {}
         for exercise in exercises_to_plot:
             if exercise in exercise_data:
-                plot_exercise_boxplot(exercise, exercise_data[exercise])
+                exercise_to_num_datapoints[exercise] = len(exercise_data[exercise])
+                # plot_exercise_boxplot(exercise, exercise_data[exercise], show_plot=show_plot)
+
+        import inspect
+        src = inspect.getsource(EXERCISE_KEY)
+        print(src)
+
+        fn_hash = hash(src) # export PYTHONHASHSEED=0
+        fn_hash_str = f"pos_{fn_hash}" if fn_hash >= 0 else f"neg_{-fn_hash}"
+
+        file_path = Path(".", "stats", f"{cache_filename.name.strip(".json")}_{fn_hash_str}.json")
+        with open(file_path, "w", encoding="utf-8") as f:
+
+            stats_dict["exercise_key"] = {
+                "hash": fn_hash,
+                "hash_str": fn_hash_str,
+                "src": src
+
+            }
+            stats_dict["exercise_to_num_datapoints"] = exercise_to_num_datapoints
+
+            json.dump(stats_dict, f, ensure_ascii=False, indent=2)
+
+        print(f"Saved {fn_hash_str} stats to {file_path}")
 
 
 if __name__ == "__main__":

@@ -86,7 +86,7 @@ def annotate_personal_record(weights):
     )
 
 
-def plot_exercise_boxplot(exercise_name, exercise_data):
+def plot_exercise_boxplot(exercise_name, exercise_data, show_plot):
     """
     exercise_data: dict[date] -> list[weights]
     """
@@ -122,4 +122,6 @@ def plot_exercise_boxplot(exercise_name, exercise_data):
 
     plt.tight_layout()
     plt.savefig(os.path.join(".", "imgs", "_".join(exercise_name.split(" ")) + ".png"))
-    plt.show()
+
+    if show_plot:
+        plt.show()

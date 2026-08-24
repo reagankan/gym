@@ -58,4 +58,4 @@ def load_cache(get_latest=False):
             return int(m.group(1)) if m else -1
         chosen_file = max(json_files, key=_extract_num_days)
 
-    return load_workouts(chosen_file)
+    return load_workouts(chosen_file), chosen_file

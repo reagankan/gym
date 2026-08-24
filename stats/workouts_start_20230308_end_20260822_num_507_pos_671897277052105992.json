@@ -1,0 +1,8 @@
+{
+  "exercise_key": {
+    "hash": 671897277052105992,
+    "hash_str": "pos_671897277052105992",
+    "src": "    def _default_exercise_key(line):\n        return line.strip().lower()\n"
+  },
+  "exercise_to_num_datapoints": {}
+}
